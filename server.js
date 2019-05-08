@@ -4,8 +4,8 @@ const path = require('path');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-//var porta = process.env.PORT || 3000;
-//app.listen(porta);
+var porta = process.env.PORT || 3000;
+app.listen(porta);
 
 //pasta com arquivos front end
 app.use(express.static(path.join(__dirname, 'public')));
