@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 
 const app = express();
-const server = require('http').createServer(app);
+const server = require('http').Server(app);
 const io = require('socket.io')(server);
 var porta = process.env.PORT || 3000;
 app.listen(porta);
@@ -10,13 +10,8 @@ app.listen(porta);
 //pasta com arquivos front end
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.set('views', path.join(__dirname, 'public'));
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
-
-
-app.use('/', (req, res) => {
-    res.render('index.html');
+app.get('/', (req, res) => {
+    res.sendFile('/public/index.html', {root:'.'});
 });
 
 let messages = []; 
@@ -34,6 +29,4 @@ io.on('connection', socket => {
 
 });
 
-
-
-server.listen(3000);
+server.listen(3100);
