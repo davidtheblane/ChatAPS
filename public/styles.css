@@ -45,41 +45,23 @@ html, body {
   }
 
 
-  @media (max-width: 321px) {
+  /*CELULAR*/
+  @media (max-width: 426px) {
 
-    #chat {
-      height: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-    
+ 
     input {
-      width: 100px;
-      border: 1px solid red;
-      height: 30px;
-      padding: 0 10px;
-      font-size: 14px;
+      width: 80%;
+      height: 50px;
+      
     }
     
     button {
-      width: 100px;
-      height: 30px;
-      font-size: 14px;
-      background: #069;
-      text-align: center;
-      line-height: 50px;
-      font-weight: bold;
-      color: #FFF;
-      margin-top: 10px;
+      width: 80%;
+      height: 50px;
     }
     
     .messages {
-      width: 100px;
+      width: 80%;
       height: 300px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      padding: 10px;
     }
 }
