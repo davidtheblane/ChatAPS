@@ -53,6 +53,7 @@ $('#chat').submit(function(event){
         renderMessage(messageObject);
 
 
+        console.log("mandando mensagem pro servidor")
         socket.emit('sendMessage', messageObject);
     }
 });
