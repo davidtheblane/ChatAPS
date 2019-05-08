@@ -17,6 +17,7 @@ io.on('connection', function(socket){
     console.log(`Socket conectado: ${socket.id}`);
 
     socket.emit('previousMessages', messages);
+  callback();
 
     socket.on('sendMessage', data => {
         console.log("recebendo a mensagem do cliente")
