@@ -1,32 +1,30 @@
-const express = require('express');
-const path = require('path');
+var express = require('express');
+var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+var path = require('path');
+var port = process.env.PORT || 3000;
 
-const app = express();
-const server = require('http').Server(app);
-const io = require('socket.io')(server);
-var porta = process.env.PORT || 3000;
-app.listen(porta);
-
-//pasta com arquivos front end
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', (req, res) => {
-    res.sendFile('/public/index.html', {root:'.'});
-});
 
 let messages = []; 
 
+app.get('/', function(req, res){
+  res.sendFile('/public/index.html', {root:'.'});
+});
 
-io.on('connection', socket => {
+io.on('connection', function(socket){
     console.log(`Socket conectado: ${socket.id}`);
 
     socket.emit('previousMessages', messages);
 
     socket.on('sendMessage', data => {
+        console.log("recebendo a mensagem do cliente")
         messages.push(data);
         socket.broadcast.emit('receivedMessage', data);
     });
-
 });
 
-server.listen(3100);
+http.listen(port, function(){
+  console.log('listening on *:' + port);
+});
