@@ -4,28 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     <title>Chat APS</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <!--MOMENT getTIME-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
+
 
     <link rel="stylesheet" href="styles.css">
 
 </head>
 <body>
-<form id="chat">
+
     
+<form id="chat">
+    <h1>Mensageiro NPC</h1>
     <input type="text" name="username" placeholder="Digite seu usuário">
     <div class="messages"></div>
-    <input type="text" name="message" placeholder="Digite sua mensagem">
+    <input id="textChat" type="text" name="message" placeholder="Digite sua mensagem">
     <button type="submit">Enviar</button>
 
 </form>
     
 <script type="text/javascript">
 var socket = io();
+var moment = moment();
 
 function renderMessage(message) {
-    $('.messages').append('<div class="message"><strong>'+ message.author +'</strong>: '+ message.message +'</div>')
+    //$('.messages').append('<div class="message"> ' + message.time  + '<strong>'+ message.author +'</strong>: '+ message.message +'</div>')
+    $('.messages').append('<div class="message"> <strong>'+ message.author +'</strong>: '+ message.message +'</div>')
+    $('.messages').append('<div class="timeFont">  '+ message.time +' </div>')
+    $('.messages').animate({ scrollTop: 1000 }, "slow"); //Manter a auto rolagem do chat em baixo.
+}
+
+function getTime(){
+    return moment.get('hour') + ":" + moment.get('minutes');
 }
 
 socket.on('previousMessages', function(messages) {
@@ -33,6 +47,10 @@ socket.on('previousMessages', function(messages) {
         renderMessage(message);
     }
 });
+
+socket.on('newUser', function(users){
+    console.log(users);
+})
 
 socket.on('receivedMessage', function(message) {
     renderMessage(message);
@@ -42,19 +60,23 @@ $('#chat').submit(function(event){
     event.preventDefault();
 
     var author = $('input[name=username]').val();
+    var time = getTime();
     var message = $('input[name=message]').val();
 
-    if (author.length && message.length){
+    if (author.length > 0 && message.length > 0){
         var messageObject = {
             author: author,
             message: message,
+            time: time
         };
 
+        console.log(messageObject.author)
         renderMessage(messageObject);
 
+        socket.emit('newUser', messageObject.author);
 
-        console.log("mandando mensagem pro servidor")
         socket.emit('sendMessage', messageObject);
+        $('#textChat').val('');
     }
 });
 
