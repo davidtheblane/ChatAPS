@@ -12,19 +12,29 @@ let users = [];
 
 app.get('/', function(req, res){
   res.sendFile('index.html', {root:'.'});
-  //res.sendFile('/public/index.html', {root:'.'});
+  
 });
+//------------
+io.on('connection', function (socket) {  
 
-io.on('connection', function(socket){
-    console.log(`Socket conectado: ${socket.id}`);
+  socket.on('disconnect', function() {
+    console.log(socket.name)
+    socket.broadcast.emit('disconnectClient', socket.name);
+  })
+
+  socket.on("join", function(name){
+    console.log("Joined: "  +name );
+    socket.name = name;
+    users.push(name);
+    socket.broadcast.emit('update', name + " entrou na sala");
+  });
+// -------------
+
+//io.on('connection', function(socket){
+
+    //console.log(`Socket conectado: ${socket.id}`);
 
     socket.emit('previousMessages', messages);
-
-    socket.on('newUser', function(name){
-      users.push(name);
-      console.log(users);
-      socket.broadcast.emit('newUser', users)
-    })
 
     socket.on('sendMessage', function(data){
         console.log("recebendo a mensagem do cliente");
@@ -35,4 +45,4 @@ io.on('connection', function(socket){
 
 http.listen(port, function(){
   console.log('listening on *:' + port);
-});
+})
