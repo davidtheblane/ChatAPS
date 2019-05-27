@@ -118,9 +118,14 @@ html, body {
   /*CELULAR*/
   @media (max-width: 426px) {
 
+    html, body {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 10px;
+    }
 
     h1 {
-      font-size: 14px;
+      font-size: 12px;
     }
  
     input {
@@ -140,8 +145,12 @@ html, body {
     }
 
     .logoIMG{
-      width: 30%;
+      width: 15%;
       margin: 0 auto;
+      }
+
+      .timeFont {
+        font-size: 8px;
       }
   
 }
