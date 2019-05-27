@@ -18,13 +18,15 @@
 <body>
     
     <div class="nickname_container" id="nick">
+        <span class="logo"><img src="chat3.png" width="300px"></span>
         <span>Digite seu Nome: </span>
         <form id="submit"><input id="nickname" type="text"/></form>
     </div>
     
 <form id="chat">
-
-    <h1>Mensageiro NPC</h1>
+        <img src="chat3Red.png" width="300px">
+    <h1>APS DE REDES</h1>
+    
     <!--<input type="text" name="username" placeholder="Digite seu usuário">-->
     <div class="messages"></div>
     <input id="textChat" type="text" name="message" placeholder="Digite sua mensagem">
@@ -40,7 +42,8 @@ var moment = moment();
 
 function renderMessage(message) {
     //$('.messages').append('<div class="message"> ' + message.time  + '<strong>'+ message.author +'</strong>: '+ message.message +'</div>')
-    $('.messages').append('<div class="message"> <strong>'+ message.name +'</strong>: '+ message.message +'</div>')
+    $('.messages').append('<div class="message"> <strong>'+ message.name +'</strong>:<br>')
+    $('.messages').append('<div class="messageText">' + message.message)
     $('.messages').append('<div class="timeFont">  '+ message.time +' </div>')
     $('.messages').animate({ scrollTop: 1000 }, "slow"); //Manter a auto rolagem do chat em baixo.
 }
@@ -66,7 +69,7 @@ socket.on('receivedMessage', function(message) {
 socket.on('disconnectClient', function(name){
     renderMessage({
         message: name + " saiu da sala",
-        name: "Servidor",
+        name: "Servidor", 
         time: getTime()
     })
 });
