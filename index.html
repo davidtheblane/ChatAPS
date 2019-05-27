@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Chat APS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <!--MOMENT getTIME-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
+
+
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    
+    <div class="nickname_container" id="nick">
+        <img src="chat3.png" class="logoIMG">
+        <span>Digite seu Nome: </span>
+        <form id="submit"><input id="nickname" type="text"/></form>
+    </div>
+    
+<form id="chat">
+        <img src="chat3Red.png" class="logoIMG">
+    <h1>APS DE REDES</h1>
+    
+    <!--<input type="text" name="username" placeholder="Digite seu usuário">-->
+    <div class="messages"></div>
+    <input id="textChat" type="text" name="message" placeholder="Digite sua mensagem">
+    <button type="submit">Enviar</button>
+
+</form>
+    
+<script type="text/javascript">
+var socket = io();
+var moment = moment();
+
+
+
+function renderMessage(message) {
+    //$('.messages').append('<div class="message"> ' + message.time  + '<strong>'+ message.author +'</strong>: '+ message.message +'</div>')
+    $('.messages').append('<div class="message"> <strong>'+ message.name +'</strong>:<br>')
+    $('.messages').append('<div class="messageText">' + message.message)
+    $('.messages').append('<div class="timeFont">  '+ message.time +' </div>')
+    $('.messages').animate({ scrollTop: 1000 }, "slow"); //Manter a auto rolagem do chat em baixo.
+}
+
+function getTime(){
+    return moment.get('hour') + ":" + moment.get('minutes');
+}
+
+socket.on('previousMessages', function(messages) {
+    for(message of messages) {
+        renderMessage(message);
+    }
+});
+
+socket.on('newUser', function(users){
+    console.log(users);
+});
+
+socket.on('receivedMessage', function(message) {
+    renderMessage(message);
+});
+
+socket.on('disconnectClient', function(name){
+    renderMessage({
+        message: name + " saiu da sala",
+        name: "Servidor", 
+        time: getTime()
+    })
+});
+
+socket.on('update', function(msg){
+
+    renderMessage({
+        message: msg,
+        name: "Servidor",
+        time: getTime()
+    });
+})
+
+$("#submit").submit(function(event) {
+        event.preventDefault();
+        
+		$("#nick").fadeOut();
+		$("#chat").fadeIn();
+		var name = $("#nickname").val();
+		var time = getTime();
+		//$("#name").html(name);
+		//$("#time").html('First login: ' + time.getHours() + ':' + time.getMinutes());
+
+        renderMessage({
+            message: "Bem vindo ao nosso Chat!",
+            name: "Servidor",
+            time: time
+        });
+        console.log(name)
+		ready = true;
+        socket.emit("join", name);
+});
+
+
+$('#chat').submit(function(event){
+    event.preventDefault();
+
+    var name = $('#nickname').val();
+    var time = getTime();
+    var message = $('input[name=message]').val();
+
+    if (name.length > 0 && name.length > 0){
+        var messageObject = {
+            name: name,
+            message: message,
+            time: time
+        };
+
+        
+
+        console.log(messageObject.name)
+        renderMessage(messageObject);
+
+        socket.emit('newUser', messageObject.name);
+
+        socket.emit('sendMessage', messageObject);
+        $('#textChat').val('');
+    }
+});
+
+</script>
+</body>
+</html>
