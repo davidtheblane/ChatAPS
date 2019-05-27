@@ -110,6 +110,10 @@ html, body {
     font-size: 10px;
   }
 
+  .logoIMG{
+    width: 200px;
+    margin: 0 auto;
+    }
 
   /*CELULAR*/
   @media (max-width: 426px) {
@@ -134,5 +138,10 @@ html, body {
       width: 80%;
       height: 300px;
     }
+
+    .logoIMG{
+      width: 30%;
+      margin: 0 auto;
+      }
   
 }
